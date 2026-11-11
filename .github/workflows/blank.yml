@@ -1,0 +1,29 @@
+name : Test GCP connection
+on:
+  push:
+    branches: [ main ]
+Jobs:
+  test-connection:
+    run-on: ubuntu-latest
+    permissions:
+      contents:'read'
+      id-token:'write'
+
+
+    steps:
+      - name: 'checkout repository'
+        uses: 'actions/checkout@v4'
+      - id: 'auth'
+        name: 'Authentication to google cloud'
+        uses: 'google-github-actions/auth@v2
+        with:
+          workload_identity_provider: $${{secrets.WIF_PROVIDER}}
+          service_account: $${{secrets.WIF_SERVICE_ACCOUNT}}
+      - name: 'verify coonnection'
+        run: |
+          gcloud auth list 
+          gcloud config list 
+          echo: "connection is successfull!"
+          
+
+        
